@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Fork branding: overrides app_name from core:base (app resources take precedence over library resources). -->
+<resources>
+    <string name="app_name">MG-01 Launcher</string>
+</resources>

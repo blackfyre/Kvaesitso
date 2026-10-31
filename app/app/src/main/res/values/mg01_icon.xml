@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Fork branding: launcher icon colours from the Blackfyre design system (Paper theme tokens). -->
+<resources>
+    <color name="mg01_icon_ink">#1B1B19</color>    <!-- bf-ink -->
+    <color name="mg01_icon_paper">#E6E4DF</color>  <!-- bf-paper -->
+    <color name="mg01_icon_accent">#E2551D</color> <!-- bf-accent -->
+</resources>
