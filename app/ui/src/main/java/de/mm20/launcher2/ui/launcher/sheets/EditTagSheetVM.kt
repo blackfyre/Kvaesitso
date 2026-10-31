@@ -139,6 +139,12 @@ class EditTagSheetVM : ViewModel(), KoinComponent {
             taggableOther.map { oth -> oth.copy(isTagged = taggedItems.any { it.key == oth.item.key }) }
     }
 
+    // Fork (pinned-tag-folders): reorder the tag's items; save() stores this order.
+    fun moveTaggedItem(from: Int, to: Int) {
+        if (from !in taggedItems.indices || to !in taggedItems.indices) return
+        taggedItems = taggedItems.toMutableList().apply { add(to, removeAt(from)) }
+    }
+
     fun untagItem(item: SavableSearchable) {
         taggedItems = taggedItems.filter { it.key != item.key }
         taggableApps =

@@ -509,6 +509,7 @@ fun CustomizeTag(viewModel: EditTagSheetVM) {
                 }
             }
         }
+        TaggedItemsOrder(viewModel) // Fork (pinned-tag-folders)
     }
 }
 

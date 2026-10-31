@@ -62,6 +62,10 @@ import de.mm20.launcher2.search.Website
 import de.mm20.launcher2.ui.component.LauncherCard
 import de.mm20.launcher2.ui.component.LocalIconShape
 import de.mm20.launcher2.ui.component.ShapedLauncherIcon
+import de.mm20.launcher2.search.Tag
+import de.mm20.launcher2.ui.launcher.search.common.grid.folder.FolderAwareLauncherIcon
+import de.mm20.launcher2.ui.launcher.search.common.grid.folder.TagItemGridPopup
+import de.mm20.launcher2.ui.launcher.search.common.grid.folder.rememberTagFolderLaunch
 import de.mm20.launcher2.ui.ktx.toPixels
 import de.mm20.launcher2.ui.launcher.search.apps.AppItemGridPopup
 import de.mm20.launcher2.ui.launcher.search.calendar.CalendarItemGridPopup
@@ -103,6 +107,7 @@ fun GridItem(
     var bounds by remember { mutableStateOf(IntRect.Zero) }
 
     val launchOnPress = !item.preferDetailsOverLaunch
+    val folderLaunch = rememberTagFolderLaunch(item, LocalGridSettings.current.iconSize.dp) // Fork: tags are folders
     val hapticFeedback = LocalHapticFeedback.current
 
     LaunchedEffect(showPopup) {
@@ -114,7 +119,9 @@ fun GridItem(
             .padding(4.dp)
             .combinedClickable(
                 onClick = {
-                    if (!launchOnPress || !viewModel.launch(context, bounds)) {
+                    if (folderLaunch != null) {
+                        folderLaunch(context, bounds) { showPopup = true }
+                    } else if (!launchOnPress || !viewModel.launch(context, bounds)) {
                         showPopup = true
                     }
                 },
@@ -168,7 +175,8 @@ fun GridItem(
                     contentDescription = item.label
                 },
         ) {
-            ShapedLauncherIcon(
+            FolderAwareLauncherIcon(
+                item = item,
                 modifier = Modifier
                     .padding(4.dp)
                     .onGloballyPositioned {
@@ -351,6 +359,18 @@ fun ItemPopup(origin: IntRect, searchable: Searchable, onDismissRequest: () -> U
                     is AppShortcut -> {
                         ShortcutItemGridPopup(
                             shortcut = searchable,
+                            show = show,
+                            animationProgress = p,
+                            origin = origin,
+                            onDismiss = {
+                                show.targetState = false
+                            }
+                        )
+                    }
+
+                    is Tag -> {
+                        TagItemGridPopup(
+                            tag = searchable,
                             show = show,
                             animationProgress = p,
                             origin = origin,
