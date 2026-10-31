@@ -30,6 +30,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntRect
 import androidx.compose.ui.unit.dp
@@ -175,7 +177,14 @@ fun TagItemGridPopup(
                     Icon(painterResource(R.drawable.edit_24px), stringResource(R.string.edit))
                 }
             }
-            SearchResultGrid(items = items, modifier = Modifier.padding(bottom = 8.dp))
+            // The card is bounded by the screen; a tag with many items scrolls inside it.
+            SearchResultGrid(
+                items = items,
+                modifier = Modifier
+                    .weight(1f, fill = false)
+                    .verticalScroll(rememberScrollState())
+                    .padding(bottom = 8.dp),
+            )
         }
     }
 }
