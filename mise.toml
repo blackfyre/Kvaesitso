@@ -1,0 +1,27 @@
+# Toolchain for the Blackfyre fork of Kvaesitso.
+# The Android SDK lives inside mise's install dir ($ANDROID_HOME below); AGP
+# downloads the platform and build-tools it needs once the licences are accepted.
+
+[tools]
+java = "temurin-21"
+android-sdk = "23.0" # Android command-line tools; sets ANDROID_HOME/ANDROID_SDK_ROOT
+
+[env]
+_.path = { path = "{{env.ANDROID_HOME}}/platform-tools", tools = true }
+
+[tasks."sdk:setup"]
+description = "Install platform-tools (adb); first run shows the SDK terms and writes the licence file"
+run = "sdkmanager --install platform-tools"
+
+[tasks.build]
+description = "Assemble the default-flavour debug APK"
+run = "./gradlew :app:app:assembleDefaultDebug"
+
+[tasks.install]
+description = "Build and install the default-flavour debug APK on the connected device"
+run = "./gradlew :app:app:installDefaultDebug"
+
+[tasks.test]
+description = "Run JVM unit tests"
+run = "./gradlew testDebugUnitTest"
+
