@@ -53,7 +53,7 @@ Run through mise so the pinned environment applies (`mise run <task>` or `mise e
 
 Build variants: flavours `default` and `fdroid` × build types `debug` (suffix `.debug`), `release` (`.release`, minified), `nightly` (CI only, needs a signing keystore from env). Library modules have no flavours, so their tasks are `…DebugUnitTest`, not `…DefaultDebugUnitTest`.
 
-Unit tests are sparse: only `core/base` (search scoring, fuzzy matcher, opening schedules) and `data/locations` have JVM tests. There are no instrumentation tests in active use. Most behaviour must be verified on a device.
+Unit tests are sparse: only `core/base` (search scoring, fuzzy matcher, opening schedules), `data/locations`, and the fork's `data/customattrs` have JVM tests. There are no instrumentation tests in active use. Most behaviour must be verified on a device.
 
 ## Architecture
 
@@ -71,7 +71,7 @@ Dependency injection is Koin. Each module has a `Module.kt` declaring its Koin d
 
 - Room schema JSON is exported to `data/database/schemas/de.mm20.launcher2.database.AppDatabase/<version>.json` and must be committed with any schema change.
 - Schema version is in `AppDatabase.kt` (`version = …`); hand-written migrations live in `data/database/.../database/migrations/Migration_X_Y.kt` and are registered in `AppDatabase`.
-- Tags are stored as rows in `CustomAttributes` (`type = 'tag'`), accessed through `CustomAttrsDao` and `data:customattrs`.
+- Tags are stored as rows in `CustomAttributes` (`type = 'tag'`), accessed through `CustomAttrsDao` and `data:customattrs`. A tag's item order (the fork's folder order) is the rows' `id` order (`AUTOINCREMENT`): there is no order column. Every write must append or keep existing rows (`setTags` is a diff; the tag editor rewrites the tag in list order), and backup must export `ORDER BY id` and restore pages in order. Check this whenever an upstream merge touches tag writes or the custom-attribute backup.
 - User preferences use AndroidX DataStore (`core:preferences`), not Room.
 
 ### Backup and restore

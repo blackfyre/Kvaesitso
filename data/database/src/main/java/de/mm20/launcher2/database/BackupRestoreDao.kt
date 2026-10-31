@@ -43,7 +43,7 @@ interface BackupRestoreDao {
     @Query("DELETE FROM CustomAttributes")
     suspend fun wipeCustomAttributes()
 
-    @Query("SELECT * FROM CustomAttributes LIMIT :limit OFFSET :offset")
+    @Query("SELECT * FROM CustomAttributes ORDER BY id LIMIT :limit OFFSET :offset") // Fork: keeps tag item order
     suspend fun exportCustomAttributes(limit: Int, offset: Int): List<CustomAttributeEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
