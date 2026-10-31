@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.unit.IntRect
 import androidx.core.app.ActivityOptionsCompat
+import de.mm20.launcher2.data.customattrs.CustomAttributesRepository
+import de.mm20.launcher2.data.customattrs.utils.withCustomLabels
 import de.mm20.launcher2.icons.IconService
 import de.mm20.launcher2.icons.LauncherIcon
 import de.mm20.launcher2.search.AppShortcut
@@ -40,6 +42,7 @@ class TagFolderVM : ListItemViewModel(), KoinComponent {
     private val tagsService: TagsService by inject()
     private val iconService: IconService by inject()
     private val favoritesService: FavoritesService by inject()
+    private val customAttributesRepository: CustomAttributesRepository by inject()
 
     private val tag = MutableStateFlow<Tag?>(null)
     private val iconSize = MutableStateFlow(0)
@@ -50,7 +53,8 @@ class TagFolderVM : ListItemViewModel(), KoinComponent {
     }
 
     val items: StateFlow<List<SavableSearchable>> = tag.flatMapLatest {
-        if (it == null) emptyFlow() else tagsService.getTaggedItems(it.tag)
+        if (it == null) emptyFlow()
+        else tagsService.getTaggedItems(it.tag).withCustomLabels(customAttributesRepository)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     /**
