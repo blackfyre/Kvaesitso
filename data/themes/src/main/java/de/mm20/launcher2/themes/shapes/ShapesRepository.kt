@@ -3,7 +3,9 @@ package de.mm20.launcher2.themes.shapes
 import android.content.Context
 import de.mm20.launcher2.database.AppDatabase
 import de.mm20.launcher2.themes.CutShapesId
+import de.mm20.launcher2.themes.BlackfyreThemeId
 import de.mm20.launcher2.themes.DefaultThemeId
+import de.mm20.launcher2.themes.blackfyre.BlackfyreShapes
 import de.mm20.launcher2.themes.ExtraRoundShapesId
 import de.mm20.launcher2.themes.R
 import de.mm20.launcher2.themes.RectShapesId
@@ -30,6 +32,7 @@ class ShapesRepository(
     }
 
     fun get(id: UUID): Flow<Shapes?> {
+        if (id == BlackfyreThemeId) return flowOf(BlackfyreShapes)
         if (id == DefaultThemeId) return flowOf(default)
         if (id == ExtraRoundShapesId) return flowOf(extraRound)
         if (id == RectShapesId) return flowOf(rect)
@@ -63,6 +66,7 @@ class ShapesRepository(
 
     private fun getBuiltIn(): List<Shapes> {
         return listOf(
+            BlackfyreShapes,
             default,
             extraRound,
             rect,

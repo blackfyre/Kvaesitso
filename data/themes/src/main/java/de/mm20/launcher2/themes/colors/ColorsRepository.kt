@@ -3,7 +3,9 @@ package de.mm20.launcher2.themes.colors
 import android.content.Context
 import de.mm20.launcher2.database.AppDatabase
 import de.mm20.launcher2.themes.BlackAndWhiteThemeId
+import de.mm20.launcher2.themes.BlackfyreThemeId
 import de.mm20.launcher2.themes.DefaultThemeId
+import de.mm20.launcher2.themes.blackfyre.BlackfyreColors
 import de.mm20.launcher2.themes.HighContrastThemeId
 import de.mm20.launcher2.themes.R
 import kotlinx.coroutines.CoroutineScope
@@ -29,6 +31,7 @@ class ColorsRepository(
     }
 
     fun get(id: UUID): Flow<Colors?> {
+        if (id == BlackfyreThemeId) return flowOf(BlackfyreColors)
         if (id == DefaultThemeId) return flowOf(default)
         if (id == HighContrastThemeId) return flowOf(highContrast)
         if (id == BlackAndWhiteThemeId) return flowOf(blackAndWhite)
@@ -62,6 +65,7 @@ class ColorsRepository(
 
     private fun getBuiltIn(): List<Colors> {
         return listOf(
+            BlackfyreColors,
             default,
             highContrast,
             blackAndWhite,

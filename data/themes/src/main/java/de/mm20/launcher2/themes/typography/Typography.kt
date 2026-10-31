@@ -217,6 +217,17 @@ sealed interface FontFamily {
     @Serializable
     @SerialName("system")
     data class System(val name: String) : FontFamily
+
+    /**
+     * A variable font bundled with the app (Blackfyre fork): `archivo`, `jetbrains_mono`,
+     * `bf_mono_caps`. Unknown names render in the default font.
+     */
+    @Serializable
+    @SerialName("bundled")
+    data class Bundled(
+        val name: String,
+        override val settings: Map<String, Float> = emptyMap(),
+    ) : FontFamily, VariableFontFamily
 }
 
 @Serializable(with = FontWeightSerializer::class)
