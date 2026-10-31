@@ -61,13 +61,14 @@ abstract class FavoritesVM : ViewModel(), KoinComponent {
                     val includeFrequentlyUsed = it.second.frequentlyUsed
                     val frequentlyUsedRows = it.second.frequentlyUsedRows
 
+                    // Fork (pinned-tag-folders): pinned tags are included and show as folders;
+                    // their pin positions put them first, in the editor's Tags order.
                     val pinned = favoritesService.getFavorites(
                         excludeTypes = if (excludeCalendar) listOf(
                             "calendar",
                             "tasks.org",
-                            "tag",
                             "plugin.calendar"
-                        ) else listOf("tag"),
+                        ) else null,
                         minPinnedLevel = PinnedLevel.AutomaticallySorted,
                         limit = 10 * columns,
                     )

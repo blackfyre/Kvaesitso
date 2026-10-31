@@ -27,11 +27,22 @@ interface CustomAttrsDao {
     @Query("SELECT DISTINCT `key` FROM CustomAttributes WHERE (type = 'label' OR type = 'tag') AND value LIKE :query")
     fun search(query: String): Flow<List<String>>
 
+    /**
+     * Fork: replaces the item's tags without moving it within tags it keeps, so each tag's
+     * stored item order (row order) survives. Only removed tags are deleted, only new ones inserted.
+     */
     @Transaction
     suspend fun setTags(key: String, tags: List<CustomAttributeEntity>) {
-        clearCustomAttribute(key, "tag")
-        insertCustomAttributes(tags)
+        val newTags = tags.map { it.value }.toSet()
+        val currentTags = getTagsForKey(key)
+        for (tag in currentTags) {
+            if (tag !in newTags) removeTag(key, tag)
+        }
+        insertCustomAttributes(tags.filter { it.value !in currentTags }.distinctBy { it.value })
     }
+
+    @Query("SELECT value FROM CustomAttributes WHERE type = 'tag' AND `key` = :key")
+    suspend fun getTagsForKey(key: String): List<String>
 
     @Query("SELECT DISTINCT value FROM CustomAttributes WHERE type = 'tag' AND value LIKE :like ORDER BY value")
     fun getAllTagsLike(like: String): Flow<List<String>>
@@ -39,7 +50,8 @@ interface CustomAttrsDao {
     @Query("SELECT DISTINCT value FROM CustomAttributes WHERE type = 'tag' ORDER BY value")
     fun getAllTags(): Flow<List<String>>
 
-    @Query("SELECT `key` FROM CustomAttributes WHERE type = 'tag' AND value = :tag")
+    // Fork: row order (id) is the tag's stored item order.
+    @Query("SELECT `key` FROM CustomAttributes WHERE type = 'tag' AND value = :tag ORDER BY id")
     fun getItemsWithTag(tag: String): Flow<List<String>>
 
     @Transaction

@@ -139,8 +139,8 @@ internal class CustomAttributesRepositoryImpl(
 
     override fun getItemsForTag(tag: String): Flow<List<SavableSearchable>> {
         val dao = appDatabase.customAttrsDao()
-        return dao.getItemsWithTag(tag).flatMapLatest {
-            searchableRepository.getByKeys(it)
+        return dao.getItemsWithTag(tag).flatMapLatest { keys ->
+            searchableRepository.getByKeys(keys).map { it.orderedByKeys(keys) { item -> item.key } }
         }
     }
 
@@ -222,7 +222,8 @@ internal class CustomAttributesRepositoryImpl(
             fromDir.listFiles { _, name -> name.startsWith("customizations.") }
                 ?: return@withContext
 
-        for (file in files) {
+        // Fork: import pages in order so that row order (a tag's item order) is reproduced
+        for (file in files.sortedBy { it.name }) {
             val customAttrs = mutableListOf<CustomAttributeEntity>()
             try {
                 val jsonArray = JSONArray(file.readText())
