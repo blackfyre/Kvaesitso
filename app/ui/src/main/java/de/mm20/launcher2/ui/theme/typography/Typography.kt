@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.sp
 import de.mm20.launcher2.themes.typography.DefaultEmphasizedTextStyles
 import de.mm20.launcher2.themes.typography.DefaultTextStyles
 import de.mm20.launcher2.ui.theme.typography.fontfamily.GoogleSansFlex
+import de.mm20.launcher2.ui.theme.typography.fontfamily.bundledFontFamily
 import de.mm20.launcher2.ui.theme.typography.fontfamily.getDeviceBodyFontFamily
 import de.mm20.launcher2.ui.theme.typography.fontfamily.getDeviceHeadlineFontFamily
 import de.mm20.launcher2.themes.typography.FontFamily as ThemeFontFamily
@@ -322,6 +323,7 @@ fun fontFamilyOf(
         is ThemeFontFamily.SansSerif -> FontFamily.SansSerif
         is ThemeFontFamily.Serif -> FontFamily.Serif
         is ThemeFontFamily.Monospace -> FontFamily.Monospace
+        is ThemeFontFamily.Bundled -> bundledFontFamily(fontFamily.name, fontFamily.settings)
         else -> FontFamily.Default
     }
 }

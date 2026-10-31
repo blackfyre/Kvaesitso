@@ -14,14 +14,15 @@ data class LauncherSettingsData internal constructor(
     val schemaVersion: Int = 6,
 
     val uiColorScheme: ColorScheme = ColorScheme.System,
+    // Blackfyre fork: colours, shapes and typography default to BlackfyreThemeId (data:themes).
     @Serializable(with = UUIDSerializer::class)
-    val uiColorsId: UUID = UUID(0L, 0L),
+    val uiColorsId: UUID = UUID(0x00B1ACF1E0L, 0L),
     @Serializable(with = UUIDSerializer::class)
-    val uiShapesId: UUID = UUID(0L, 0L),
+    val uiShapesId: UUID = UUID(0x00B1ACF1E0L, 0L),
     @Serializable(with = UUIDSerializer::class)
     val uiTransparenciesId: UUID = UUID(0L, 0L),
     @Serializable(with = UUIDSerializer::class)
-    val uiTypographyId: UUID = UUID(0L, 0L),
+    val uiTypographyId: UUID = UUID(0x00B1ACF1E0L, 0L),
 
     val uiCompatModeColors: Boolean = false,
     @Deprecated("No longer in use, only used for migration")

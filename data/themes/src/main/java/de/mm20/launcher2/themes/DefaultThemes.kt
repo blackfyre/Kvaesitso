@@ -18,3 +18,9 @@ val SystemFontId = UUID(0L, 1L)
 val MonospaceId = UUID(0L, 2L)
 val SerifId = UUID(0L, 3L)
 val RoundedTypographyId = UUID(0L, 4L)
+/**
+ * Blackfyre fork: the built-in Blackfyre colours, shapes and typography share this ID.
+ * `LauncherSettingsData` (core:preferences) repeats it as the default theme ID;
+ * BlackfyreThemeIdTest keeps the two equal.
+ */
+val BlackfyreThemeId = UUID(0x00B1ACF1E0L, 0L)

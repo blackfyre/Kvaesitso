@@ -996,6 +996,7 @@ private fun getFontName(context: Context, fontFamily: ThemeFontFamily?): String 
         is ThemeFontFamily.SansSerif -> "sans-serif"
         is ThemeFontFamily.Serif -> "serif"
         is ThemeFontFamily.Monospace -> "monospace"
+        is ThemeFontFamily.Bundled -> fontFamily.name
         null -> "default"
     }
 }

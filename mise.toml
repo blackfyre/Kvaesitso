@@ -5,6 +5,7 @@
 [tools]
 java = "temurin-21"
 android-sdk = "23.0" # Android command-line tools; sets ANDROID_HOME/ANDROID_SDK_ROOT
+uv = "0.13" # runs scripts/blackfyre_fonts.py with its pinned fonttools (inline script metadata)
 
 [env]
 _.path = { path = "{{env.ANDROID_HOME}}/platform-tools", tools = true }
@@ -25,3 +26,6 @@ run = "./gradlew :app:app:installDefaultDebug"
 description = "Run JVM unit tests"
 run = "./gradlew testDebugUnitTest"
 
+[tasks.fonts]
+description = "Rebuild the bundled Blackfyre fonts (archivo, jetbrains_mono, bf_mono_caps) from pinned sources"
+run = "uv run --script scripts/blackfyre_fonts.py"

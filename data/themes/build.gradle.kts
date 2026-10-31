@@ -57,4 +57,6 @@ dependencies {
     implementation(project(":core:preferences"))
     implementation(project(":libs:material-color-utilities"))
 
+    testImplementation(libs.bundles.tests)
+
 }

@@ -2,7 +2,9 @@ package de.mm20.launcher2.themes.typography
 
 import android.content.Context
 import de.mm20.launcher2.database.AppDatabase
+import de.mm20.launcher2.themes.BlackfyreThemeId
 import de.mm20.launcher2.themes.DefaultThemeId
+import de.mm20.launcher2.themes.blackfyre.BlackfyreTypography
 import de.mm20.launcher2.themes.MonospaceId
 import de.mm20.launcher2.themes.R
 import de.mm20.launcher2.themes.RoundedTypographyId
@@ -30,6 +32,7 @@ class TypographyRepository(
     }
 
     fun get(id: UUID): Flow<Typography?> {
+        if (id == BlackfyreThemeId) return flowOf(BlackfyreTypography)
         if (id == DefaultThemeId) return flowOf(default)
         if (id == RoundedTypographyId) return flowOf(defaultRound)
         if (id == SystemFontId) return flowOf(systemFont)
@@ -64,6 +67,7 @@ class TypographyRepository(
 
     private fun getBuiltIn(): List<Typography> {
         return listOf(
+            BlackfyreTypography,
             default,
             defaultRound,
             systemFont,
