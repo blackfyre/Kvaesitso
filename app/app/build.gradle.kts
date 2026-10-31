@@ -9,6 +9,7 @@ plugins {
 android {
     androidResources {
         generateLocaleConfig = true
+        localeFilters += "en"
     }
 
     packaging {
@@ -30,7 +31,7 @@ android {
         }
     }
     defaultConfig {
-        applicationId = "de.mm20.launcher2"
+        applicationId = "de.mm20.launcher2.blackfyre"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = System.getenv("VERSION_CODE_OVERRIDE")?.toIntOrNull() ?: 2026091500
