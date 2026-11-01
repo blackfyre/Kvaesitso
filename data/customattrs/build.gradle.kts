@@ -53,4 +53,6 @@ dependencies {
     implementation(project(":data:searchable"))
 
     testImplementation(libs.bundles.tests)
+    // Android's org.json is a stub in JVM unit tests; custom icon payloads are parsed with it.
+    testImplementation("org.json:json:20240303")
 }

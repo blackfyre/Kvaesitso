@@ -119,6 +119,7 @@ sealed class CustomIcon : CustomAttribute {
                 }
                 "force_themed_icon" -> ForceThemedIcon
                 "default_placeholder_icon" -> DefaultPlaceholderIcon
+                FirstItemIcon.Type -> FirstItemIcon // Fork (folder-dock-and-first-item-icon)
                 "custom_text_icon" -> {
                     CustomTextIcon(
                         text = payload.getString("text"),

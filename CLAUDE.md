@@ -25,7 +25,7 @@ Planning uses OpenSpec (`openspec/`). Put proposals, specs, designs and tasks th
 ## Decisions
 
 1. Blackfyre fidelity: **decided 2026-10-31: theme layer and component layer.** Map Blackfyre onto `data/themes` and also restyle Composables directly (mono labels, keycap controls, depth, a moving light). Keep component restyling in fork-owned files where possible, because `app/ui` has ~900 `MaterialTheme.` references and merges often. Scope is every surface, settings included; the light is driven by device tilt (gravity sensor; overhead under reduced motion); uppercase labels come from a derived caps cut of JetBrains Mono, not call-site `.uppercase()`. Planned as three OpenSpec changes: `blackfyre-theme`, `blackfyre-depth`, `blackfyre-components`.
-2. "Home screen" means the Favourites widget. If that cannot give an acceptable folder experience, surface it. Do not build a free-placement icon grid.
+2. "Home screen" means the Favourites widget and the clock widget's dock (revised 2026-11-01: the owner's home screen uses the dock). If that cannot give an acceptable folder experience, surface it. Do not build a free-placement icon grid.
 
 The Blackfyre design system's source is the Design System artifact https://claude.ai/artifact/JX4X2WDSVT48H94TboBR6V (read `project/README.md`, the brand book, with the Artifact tool's `read` action; it holds `tokens.json`). The site repository `blackfyre/legendary-winner` (local clone `~/Projects/blackfyre/legendary-winner`) mirrors the colour and depth tokens in `assets/css/tokens.css` and ships the fonts in `assets/fonts/` and `static/fonts/`; there is no `tokens/` directory. If neither is reachable, ask for an export. Never reconstruct tokens from memory.
 
@@ -84,6 +84,8 @@ Dependency injection is Koin. Each module has a `Module.kt` declaring its Koin d
 - The home screen's widget column (`app/ui/.../launcher/scaffold/components/ClockAndWidgetsHomeComponent.kt`) hosts the Favourites widget; pinned items are managed by `services:favorites`.
 - `Tag` (`core/base/.../search/Tag.kt`) is a `SavableSearchable` with `preferDetailsOverLaunch = true`, so `GridItem` opens its popup on tap.
 - Tag editing goes through `services:tags` (`TagsService`) and `app/ui/.../launcher/sheets/EditTagSheet*`.
+- Folders (pinned tags) are drawn by `GridItem` through the fork's `app/ui/.../search/common/grid/folder/`. Upstream seams to check on every upstream merge: `FavoritesVM` (tags in the grid), `FavoritesPartProvider` (the clock widget's dock; `pinnedTagsFirst`), and the `FirstItemIcon` line in `CustomIcon.fromDatabaseEntity` (`data:customattrs`; the "first item's icon" folder option is stored as the tag's custom icon).
+- Fork-only strings go in `core/i18n/src/main/res/values/strings_fork.xml`, not upstream's `strings.xml`.
 
 ### Theming
 

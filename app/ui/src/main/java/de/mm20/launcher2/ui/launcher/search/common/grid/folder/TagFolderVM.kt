@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.unit.IntRect
 import androidx.core.app.ActivityOptionsCompat
 import de.mm20.launcher2.data.customattrs.CustomAttributesRepository
+import de.mm20.launcher2.data.customattrs.FirstItemIcon
 import de.mm20.launcher2.data.customattrs.utils.withCustomLabels
 import de.mm20.launcher2.icons.IconService
 import de.mm20.launcher2.icons.LauncherIcon
@@ -65,7 +66,15 @@ class TagFolderVM : ListItemViewModel(), KoinComponent {
         .flatMapLatest { (t, size) ->
             if (t == null || size == 0) emptyFlow()
             else iconService.getCustomIcon(t).flatMapLatest { custom ->
-                if (custom == null) flowOf(null) else iconService.resolveCustomIcon(t, size, custom)
+                when (custom) {
+                    null -> flowOf(null)
+                    // Fork (folder-dock-and-first-item-icon): the first item's icon, or the
+                    // (empty) preview when the tag has no items.
+                    is FirstItemIcon -> tagsService.getTaggedItems(t.tag).flatMapLatest { items ->
+                        items.firstOrNull()?.let { iconService.getIcon(it, size) } ?: flowOf(null)
+                    }
+                    else -> iconService.resolveCustomIcon(t, size, custom)
+                }
             }
         }
 

@@ -13,6 +13,7 @@ import de.mm20.launcher2.preferences.ui.UiSettings
 import de.mm20.launcher2.searchable.PinnedLevel
 import de.mm20.launcher2.services.favorites.FavoritesService
 import de.mm20.launcher2.ui.launcher.search.common.grid.SearchResultGrid
+import de.mm20.launcher2.ui.launcher.search.common.grid.folder.pinnedTagsFirst
 import de.mm20.launcher2.widgets.CalendarWidget
 import de.mm20.launcher2.widgets.WidgetRepository
 import kotlinx.coroutines.flow.Flow
@@ -44,11 +45,14 @@ class FavoritesPartProvider : PartProvider, KoinComponent {
         )
 
         val favorites by remember(columns, dockRows, excludeCalendar) {
-            favoritesService.getFavorites(
-                excludeTypes = if (excludeCalendar) listOf("calendar", "tag") else listOf("tag"),
-                minPinnedLevel = PinnedLevel.FrequentlyUsed,
-                limit = columns * dockRows
-            )
+            // Fork (folder-dock-and-first-item-icon): pinned tags lead the dock as folders.
+            favoritesService.pinnedTagsFirst(columns * dockRows) { limit ->
+                favoritesService.getFavorites(
+                    excludeTypes = if (excludeCalendar) listOf("calendar", "tag") else listOf("tag"),
+                    minPinnedLevel = PinnedLevel.FrequentlyUsed,
+                    limit = limit
+                )
+            }
         }.collectAsState(emptyList())
 
 

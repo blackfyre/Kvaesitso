@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Fork-only strings, kept apart from upstream's strings.xml to avoid merge conflicts. -->
+<resources>
+    <string name="tag_folder_first_item_icon">Use first item\'s icon</string>
+</resources>
