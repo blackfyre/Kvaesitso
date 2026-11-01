@@ -3,7 +3,7 @@ package de.mm20.launcher2.ui.launcher.search.calendar
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.material3.OutlinedButton
+import de.mm20.launcher2.ui.component.blackfyre.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource

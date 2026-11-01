@@ -1,6 +1,8 @@
 package de.mm20.launcher2.ui.theme.blackfyre
 
 import android.graphics.BlurMaskFilter
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
@@ -22,6 +24,7 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
@@ -50,8 +53,11 @@ val DarkPanelDepth = PanelDepth(
     cast = Color.Black.copy(alpha = 0.35f),
 )
 
-/** Depth while the Blackfyre colour theme is active: the panel colours and the light. */
-class BlackfyreDepth(val panel: PanelDepth, val light: StateFlow<Light>)
+/**
+ * Depth while the Blackfyre colour theme is active: the panel colours, the light, and whether the
+ * Dark scheme is in use (the fork's components pick their Paper or Dark values from it).
+ */
+class BlackfyreDepth(val panel: PanelDepth, val light: StateFlow<Light>, val dark: Boolean)
 
 /** Null unless the Blackfyre colour theme is active. */
 val LocalBlackfyreDepth = staticCompositionLocalOf<BlackfyreDepth?> { null }
@@ -63,7 +69,7 @@ fun ProvideBlackfyreDepth(enabled: Boolean, dark: Boolean, content: @Composable 
     val scope = rememberCoroutineScope()
     val light = remember(context, enabled) { if (enabled) BlackfyreLight(context, scope) else null }
     val depth = remember(light, dark) {
-        light?.let { BlackfyreDepth(if (dark) DarkPanelDepth else PaperPanelDepth, it.light) }
+        light?.let { BlackfyreDepth(if (dark) DarkPanelDepth else PaperPanelDepth, it.light, dark) }
     }
     // One call site whatever [enabled] is, so switching themes keeps the content's state.
     CompositionLocalProvider(LocalBlackfyreDepth provides depth, content = content)
@@ -72,6 +78,18 @@ fun ProvideBlackfyreDepth(enabled: Boolean, dark: Boolean, content: @Composable 
 /** Material elevation to use: none while Blackfyre depth replaces it, otherwise [default]. */
 @Composable
 fun blackfyreElevation(default: Dp): Dp = if (LocalBlackfyreDepth.current != null) 0.dp else default
+
+/** Fork (blackfyre-components): [default], or the panel radius (`bf-radius-panel`, 22 dp) while Blackfyre is active. */
+@Composable
+fun blackfyreShape(default: Shape): Shape =
+    if (LocalBlackfyreDepth.current != null) BlackfyrePanelShape else default
+
+val BlackfyrePanelShape = RoundedCornerShape(22.dp)
+
+/** Fork (blackfyre-components): [default], or the kicker style (mono capitals, 11 sp, 0.1 em) while Blackfyre is active. */
+@Composable
+fun blackfyreKicker(default: TextStyle): TextStyle =
+    if (LocalBlackfyreDepth.current != null) MaterialTheme.typography.labelSmall else default
 
 /** The cast shadow's offset for [light] (site: `calc(cx * 18px) calc(10px + cy * 9px)`). */
 fun panelCastOffset(light: Light): DpOffset = DpOffset(18.dp * light.cx, 10.dp + 9.dp * light.cy)
@@ -117,13 +135,13 @@ fun Modifier.blackfyrePanel(shape: Shape): Modifier {
     }
 }
 
-private fun shadowPaint(color: Color, cssBlur: Float) =
+internal fun shadowPaint(color: Color, cssBlur: Float) =
     android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG).apply {
         this.color = color.toArgb()
         maskFilter = BlurMaskFilter(blurMaskRadius(cssBlur), BlurMaskFilter.Blur.NORMAL)
     }
 
-private fun DrawScope.drawShadow(path: Path, paint: android.graphics.Paint, offset: Offset) {
+internal fun DrawScope.drawShadow(path: Path, paint: android.graphics.Paint, offset: Offset) {
     drawIntoCanvas { canvas ->
         val native = canvas.nativeCanvas
         native.save()
@@ -132,3 +150,34 @@ private fun DrawScope.drawShadow(path: Path, paint: android.graphics.Paint, offs
         native.restore()
     }
 }
+
+/**
+ * Fork (blackfyre-components): bf-shadow-dialog, `0 0 0 1px #33332f, 0 20px 60px rgba(0,0,0,.5)`,
+ * drawn outside [shape] only. A no-op without Blackfyre.
+ */
+@Composable
+fun Modifier.blackfyreDialogShadow(shape: Shape): Modifier {
+    if (LocalBlackfyreDepth.current == null) return this
+    return this.drawWithCache {
+        val path = Path().apply { addOutline(shape.createOutline(size, layoutDirection, this@drawWithCache)) }
+        val cast = shadowPaint(DialogCast, DialogBlur.toPx())
+        val ring = android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG).apply {
+            color = DialogRing.toArgb()
+            style = android.graphics.Paint.Style.STROKE
+            strokeWidth = 2 * DialogRingWidth.toPx()
+        }
+        onDrawWithContent {
+            clipPath(path, ClipOp.Difference) {
+                drawShadow(path, cast, Offset(0f, DialogOffset.toPx()))
+                drawShadow(path, ring, Offset.Zero)
+            }
+            drawContent()
+        }
+    }
+}
+
+private val DialogRing = Color(0xFF33332F)
+private val DialogRingWidth = 1.dp
+private val DialogCast = Color.Black.copy(alpha = 0.5f)
+private val DialogOffset = 20.dp
+private val DialogBlur = 60.dp

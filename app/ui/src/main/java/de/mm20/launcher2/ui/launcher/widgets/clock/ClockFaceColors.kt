@@ -4,7 +4,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
+import de.mm20.launcher2.ui.component.blackfyre.monoDisplay
 import de.mm20.launcher2.ui.locals.LocalDarkTheme
+import de.mm20.launcher2.ui.theme.blackfyre.LocalBlackfyreDepth
 
 /**
  * Fork (blackfyre-theme): upstream's watch faces draw light content over a dark wallpaper in
@@ -22,10 +24,19 @@ fun ClockFaceColors(content: @Composable () -> Unit) {
         primaryContainer = scheme.primaryContainer,
         onPrimaryContainer = scheme.onPrimaryContainer,
     )
-    if (onPrimaryContainer == scheme.onPrimaryContainer) {
+    // Fork (blackfyre-components): digital faces draw their digits in JetBrains Mono with tabular
+    // figures under Blackfyre (they use the display styles).
+    val typography = MaterialTheme.typography.let {
+        if (LocalBlackfyreDepth.current != null) it.monoDisplay() else it
+    }
+    if (onPrimaryContainer == scheme.onPrimaryContainer && typography == MaterialTheme.typography) {
         content()
     } else {
-        MaterialTheme(colorScheme = scheme.copy(onPrimaryContainer = onPrimaryContainer), content = content)
+        MaterialTheme(
+            colorScheme = scheme.copy(onPrimaryContainer = onPrimaryContainer),
+            typography = typography,
+            content = content,
+        )
     }
 }
 

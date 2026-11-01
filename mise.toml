@@ -29,3 +29,7 @@ run = "./gradlew testDebugUnitTest"
 [tasks.fonts]
 description = "Rebuild the bundled Blackfyre fonts (archivo, jetbrains_mono, bf_mono_caps) from pinned sources"
 run = "uv run --script scripts/blackfyre_fonts.py"
+
+[tasks.controls]
+description = "Swap Material 3 controls in app/ui for the Blackfyre keycaps (run after upstream merges; --revert restores)"
+run = "python3 scripts/blackfyre_controls.py"

@@ -1,7 +1,7 @@
 package de.mm20.launcher2.ui.component
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
+import de.mm20.launcher2.ui.component.blackfyre.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier

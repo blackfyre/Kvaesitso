@@ -8,6 +8,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import de.mm20.launcher2.ui.theme.blackfyre.LocalBlackfyreDepth
+import de.mm20.launcher2.ui.theme.blackfyre.blackfyreKicker
+import de.mm20.launcher2.ui.theme.blackfyre.blackfyrePanel
+import de.mm20.launcher2.ui.theme.blackfyre.blackfyreShape
 
 
 @Composable
@@ -26,14 +30,18 @@ fun PreferenceCategory(
             ) {
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.secondary
+                    // Fork (blackfyre-components): a mono-caps kicker in muted ink under Blackfyre.
+                    style = blackfyreKicker(MaterialTheme.typography.titleSmall),
+                    color = if (LocalBlackfyreDepth.current != null) MaterialTheme.colorScheme.onSurfaceVariant
+                    else MaterialTheme.colorScheme.secondary
                 )
             }
         }
         Column(
+            // Fork (blackfyre-components): a raised panel under Blackfyre.
             modifier = Modifier
-                .clip(MaterialTheme.shapes.medium),
+                .blackfyrePanel(blackfyreShape(MaterialTheme.shapes.medium))
+                .clip(blackfyreShape(MaterialTheme.shapes.medium)),
             verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
             content()

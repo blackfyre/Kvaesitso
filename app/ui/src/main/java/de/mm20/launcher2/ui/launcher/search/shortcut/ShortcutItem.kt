@@ -22,9 +22,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.AlertDialog
+import de.mm20.launcher2.ui.component.blackfyre.AlertDialog
 import androidx.compose.material3.Icon
-import androidx.compose.material3.InputChip
+import de.mm20.launcher2.ui.component.blackfyre.InputChip
 import androidx.compose.material3.InputChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text

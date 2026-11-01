@@ -18,6 +18,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
+import de.mm20.launcher2.ui.component.blackfyre.BlackfyreWell
 import de.mm20.launcher2.search.data.Calculator
 
 @Composable
@@ -37,11 +38,12 @@ fun CalculatorItem(
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.secondary
         )
+        // Fork (blackfyre-components): the result sits in a well under Blackfyre.
+        BlackfyreWell(Modifier.align(Alignment.End)) {
         Text(
             text = "= ${calculator.formattedString}",
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier
-                .align(Alignment.End)
                 .combinedClickable(
                     onClick = {},
                     onLongClick = {
@@ -52,6 +54,7 @@ fun CalculatorItem(
                     interactionSource = remember { MutableInteractionSource() }
                 ),
         )
+        }
         if (calculator.term.matches(Regex("(0x|0b)?[0-9]+"))) {
             Text(
                 calculator.formattedBinaryString,

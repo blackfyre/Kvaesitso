@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.material3.AlertDialog
+import de.mm20.launcher2.ui.component.blackfyre.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -30,6 +30,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import de.mm20.launcher2.ui.component.blackfyre.BlackfyreWell
 import de.mm20.launcher2.search.data.CurrencyUnitConverter
 import de.mm20.launcher2.search.data.UnitConverter
 import de.mm20.launcher2.ui.R
@@ -155,11 +156,14 @@ fun LazyListScope.UnitConverterResults(
                             ),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
+                        // Fork (blackfyre-components): the value sits in a well under Blackfyre.
+                        BlackfyreWell {
                         Text(
                             modifier = Modifier.widthIn(min = 48.dp),
                             text = value.formattedValue,
                             style = MaterialTheme.typography.labelLarge
                         )
+                        }
                         Text(
                             modifier = Modifier
                                 .weight(1f)

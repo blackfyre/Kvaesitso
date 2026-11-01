@@ -20,7 +20,7 @@ import androidx.compose.material3.DropdownMenuGroup
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.DropdownMenuPopup
 import androidx.compose.material3.Icon
-import androidx.compose.material3.InputChip
+import de.mm20.launcher2.ui.component.blackfyre.InputChip
 import androidx.compose.material3.InputChipDefaults
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle

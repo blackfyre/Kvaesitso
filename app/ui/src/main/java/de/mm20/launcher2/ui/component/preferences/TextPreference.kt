@@ -1,6 +1,7 @@
 package de.mm20.launcher2.ui.component.preferences
 
 import androidx.compose.material3.*
+import de.mm20.launcher2.ui.component.blackfyre.AlertDialog
 import androidx.compose.runtime.*
 import androidx.compose.ui.res.stringResource
 

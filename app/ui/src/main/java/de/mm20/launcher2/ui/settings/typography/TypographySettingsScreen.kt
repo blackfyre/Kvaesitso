@@ -23,11 +23,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
+import de.mm20.launcher2.ui.component.blackfyre.AlertDialog
+import de.mm20.launcher2.ui.component.blackfyre.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.FilterChip
+import de.mm20.launcher2.ui.component.blackfyre.FilledTonalButton
+import de.mm20.launcher2.ui.component.blackfyre.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon

@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import de.mm20.launcher2.ui.locals.LocalCardStyle
 import de.mm20.launcher2.ui.theme.blackfyre.blackfyreElevation
 import de.mm20.launcher2.ui.theme.blackfyre.blackfyrePanel
+import de.mm20.launcher2.ui.theme.blackfyre.blackfyreShape
 import de.mm20.launcher2.ui.theme.transparency.transparency
 
 @Composable
@@ -19,7 +20,7 @@ fun LauncherCard(
     modifier: Modifier = Modifier,
     elevation: Dp = 2.dp,
     backgroundOpacity: Float = MaterialTheme.transparency.surface,
-    shape: Shape = MaterialTheme.shapes.medium,
+    shape: Shape = blackfyreShape(MaterialTheme.shapes.medium), // Fork (blackfyre-components)
     color: Color = MaterialTheme.colorScheme.surface.copy(
         alpha = backgroundOpacity.coerceIn(
             0f,
