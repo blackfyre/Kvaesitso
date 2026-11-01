@@ -99,6 +99,7 @@ The built-in Blackfyre theme (colours, shapes, typography; `BlackfyreThemeId`) l
 - `app/ui`: `fontFamilyOf` (`theme/typography/Typography.kt`) and `getFontName` (`settings/typography/TypographySettingsScreen.kt`) map `Bundled`; a new `FontFamily` kind upstream breaks these exhaustive `when`s.
 - `ClockWidget.kt` `Clock()`: the watch faces are wrapped in the fork's `ClockFaceColors` (two lines; the `when` inside is deliberately not re-indented). Upstream watch faces draw light content in `onPrimaryContainer`, which Blackfyre maps to dark ink on the accent.
 - `app/ui/build.gradle.kts`: `testImplementation(libs.bundles.tests)` for fork-owned JVM tests in `app/ui/src/test`.
+- Depth (`app/ui/.../theme/blackfyre/`: `BlackfyreDepth.kt`, `BlackfyreLight.kt`): `LauncherTheme` wraps its content in `ProvideBlackfyreDepth` (active only when the colour theme is `BlackfyreThemeId`); `LauncherCard` applies `blackfyrePanel` and routes its elevations through `blackfyreElevation`; `BottomSheet` and `DismissableBottomSheet` do the same on the sheet `Surface`, with `blackfyrePanel` last in the modifier chain so it sees the sheet's own bounds. The gravity sensor runs only while a depth panel is on a resumed screen.
 
 ### Strings
 

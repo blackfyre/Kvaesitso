@@ -8,8 +8,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import de.mm20.launcher2.preferences.ui.UiSettings
+import de.mm20.launcher2.themes.BlackfyreThemeId
 import de.mm20.launcher2.themes.ThemeRepository
 import de.mm20.launcher2.ui.locals.LocalDarkTheme
+import de.mm20.launcher2.ui.theme.blackfyre.ProvideBlackfyreDepth
 import de.mm20.launcher2.ui.theme.colorscheme.darkColorSchemeOf
 import de.mm20.launcher2.ui.theme.colorscheme.lightColorSchemeOf
 import de.mm20.launcher2.ui.theme.shapes.shapesOf
@@ -78,12 +80,15 @@ fun LauncherTheme(
         LocalDarkTheme provides darkTheme,
         LocalTransparencyScheme provides transparencyScheme,
     ) {
+        // Fork (blackfyre-depth): panel depth and the tilt light, only with the Blackfyre colours.
+        ProvideBlackfyreDepth(enabled = themeColors!!.id == BlackfyreThemeId, dark = darkTheme) {
         MaterialExpressiveTheme(
             colorScheme = colorScheme,
             typography = typography,
             shapes = shapes,
             content = content
         )
+        }
     }
 }
 

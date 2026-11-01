@@ -36,6 +36,8 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import de.mm20.launcher2.ui.overlays.Overlay
 import kotlinx.coroutines.CancellationException
+import de.mm20.launcher2.ui.theme.blackfyre.blackfyreElevation
+import de.mm20.launcher2.ui.theme.blackfyre.blackfyrePanel
 
 @Composable
 fun BottomSheet(
@@ -138,7 +140,7 @@ fun <T>BottomSheet(
                     exit = slideOutVertically { it },
                 ) {
                     Surface(
-                        shadowElevation = 1.dp,
+                        shadowElevation = blackfyreElevation(1.dp), // Fork (blackfyre-depth)
                         shape = BottomSheetDefaults.ExpandedShape,
                         modifier = Modifier
                             .statusBarsPadding()
@@ -147,6 +149,7 @@ fun <T>BottomSheet(
                             .widthIn(max = BottomSheetDefaults.SheetMaxWidth)
                             .align(Alignment.BottomCenter)
                             .wrapContentHeight()
+                            .blackfyrePanel(BottomSheetDefaults.ExpandedShape) // Fork (blackfyre-depth): last, so it sees the sheet's own bounds
                     ) {
                         content(
                             if (expandedTarget) expandedState.targetState else expandedState.currentState

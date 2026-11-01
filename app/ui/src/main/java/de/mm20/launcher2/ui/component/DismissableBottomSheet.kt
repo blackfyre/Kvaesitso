@@ -60,6 +60,8 @@ import androidx.compose.ui.unit.dp
 import de.mm20.launcher2.ui.ktx.toPixels
 import de.mm20.launcher2.ui.overlays.Overlay
 import kotlinx.coroutines.CancellationException
+import de.mm20.launcher2.ui.theme.blackfyre.blackfyreElevation
+import de.mm20.launcher2.ui.theme.blackfyre.blackfyrePanel
 
 @Composable
 fun DismissableBottomSheet(
@@ -203,7 +205,7 @@ fun <T> DismissableBottomSheet(
                     )
 
                 Surface(
-                    shadowElevation = 1.dp,
+                    shadowElevation = blackfyreElevation(1.dp), // Fork (blackfyre-depth)
                     shape = BottomSheetDefaults.ExpandedShape,
                     color = MaterialTheme.colorScheme.surfaceContainerLow,
                     modifier = Modifier
@@ -254,6 +256,7 @@ fun <T> DismissableBottomSheet(
                             orientation = Orientation.Vertical,
                             flingBehavior = flingBehavior,
                         )
+                        .blackfyrePanel(BottomSheetDefaults.ExpandedShape) // Fork (blackfyre-depth): last, so it sees the sheet's own bounds
                 ) {
                     CompositionLocalProvider(
                         LocalOverscrollFactory provides null
