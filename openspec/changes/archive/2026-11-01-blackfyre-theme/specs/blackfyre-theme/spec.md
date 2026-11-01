@@ -46,7 +46,7 @@ The light colour scheme SHALL use Blackfyre's Paper theme and the dark colour sc
 
 ### Requirement: Accent contrast rules hold
 
-The colour schemes SHALL never place `bf-accent` (#e2551d) as text or icon colour on a light background. Text and icons drawn in the accent role on light backgrounds SHALL use `bf-accent-text` (#a3390c), and on dark backgrounds `bf-accent-on-dark` (#ff8a4c). Content on an accent fill SHALL use `bf-on-accent` (#1b1b19). Every foreground role SHALL reach a WCAG contrast ratio of at least 4.5:1 against the background role it is paired with.
+The colour schemes SHALL never place `bf-accent` (#e2551d) as text or icon colour on a light background. Text and icons drawn in the accent role on light backgrounds SHALL use `bf-accent-text` (#a3390c), and on dark backgrounds `bf-accent-on-dark` (#ff8a4c). Content on an accent fill SHALL use `bf-on-accent` (#1b1b19). Every foreground role SHALL reach a WCAG contrast ratio of at least 4.5:1 against the background role it is paired with. The outline role, which draws control boundaries such as the thumb and border of a switch that is off, SHALL reach at least 3:1 against every surface role. Watch faces drawn on the wallpaper in the accent role SHALL stay visible: in the Dark scheme they SHALL use `bf-accent-on-dark`, not `bf-on-accent`.
 
 #### Scenario: Accent text on light
 
@@ -62,6 +62,16 @@ The colour schemes SHALL never place `bf-accent` (#e2551d) as text or icon colou
 
 - **WHEN** the foreground roles of either scheme are measured against their paired background roles
 - **THEN** every pair reaches at least 4.5:1
+
+#### Scenario: Switch that is off
+
+- **WHEN** a switch that is off is drawn on a settings row in either scheme
+- **THEN** its thumb and border reach at least 3:1 against the track and the row
+
+#### Scenario: Clock in the Dark scheme
+
+- **WHEN** the launcher is dark, the clock widget uses the theme colour, and its content is light over the wallpaper
+- **THEN** the lit parts of the watch face are `bf-accent-on-dark`, not the page colour
 
 ### Requirement: Bundled Blackfyre typography
 

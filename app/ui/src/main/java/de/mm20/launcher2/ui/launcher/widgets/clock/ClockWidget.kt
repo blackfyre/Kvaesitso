@@ -268,6 +268,7 @@ fun Clock(
 
     val isTwentyFourHours = timeFormat.isTwentyFourHours(context)
 
+    ClockFaceColors { // Fork (blackfyre-theme): keeps light watch faces visible in dark Blackfyre.
     when (style) {
         is ClockWidgetStyle.Digital1 -> DigitalClock1(
             time = time,
@@ -330,6 +331,7 @@ fun Clock(
         is ClockWidgetStyle.Custom -> CustomClock(style, compact, useThemeColor, darkColors)
         is ClockWidgetStyle.Empty -> {}
         else -> {}
+    }
     }
 }
 

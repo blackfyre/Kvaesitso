@@ -54,7 +54,7 @@ Run through mise so the pinned environment applies (`mise run <task>` or `mise e
 
 Build variants: flavours `default` and `fdroid` × build types `debug` (suffix `.debug`), `release` (`.release`, minified), `nightly` (CI only, needs a signing keystore from env). Library modules have no flavours, so their tasks are `…DebugUnitTest`, not `…DefaultDebugUnitTest`.
 
-Unit tests are sparse: only `core/base` (search scoring, fuzzy matcher, opening schedules), `data/locations`, and the fork's `data/customattrs` and `data/themes` have JVM tests. There are no instrumentation tests in active use. Most behaviour must be verified on a device.
+Unit tests are sparse: only `core/base` (search scoring, fuzzy matcher, opening schedules), `data/locations`, and the fork's `data/customattrs`, `data/themes` and `app/ui` (fork-owned code only) have JVM tests. There are no instrumentation tests in active use. Most behaviour must be verified on a device.
 
 ## Architecture
 
@@ -95,6 +95,8 @@ The built-in Blackfyre theme (colours, shapes, typography; `BlackfyreThemeId`) l
 - `LauncherSettingsData`: the `uiColorsId`, `uiShapesId` and `uiTypographyId` defaults repeat `BlackfyreThemeId` as a literal; `BlackfyreThemeIdTest` keeps them equal.
 - `FontFamily` (`data:themes` `typography/Typography.kt`): the `Bundled` kind.
 - `app/ui`: `fontFamilyOf` (`theme/typography/Typography.kt`) and `getFontName` (`settings/typography/TypographySettingsScreen.kt`) map `Bundled`; a new `FontFamily` kind upstream breaks these exhaustive `when`s.
+- `ClockWidget.kt` `Clock()`: the watch faces are wrapped in the fork's `ClockFaceColors` (two lines; the `when` inside is deliberately not re-indented). Upstream watch faces draw light content in `onPrimaryContainer`, which Blackfyre maps to dark ink on the accent.
+- `app/ui/build.gradle.kts`: `testImplementation(libs.bundles.tests)` for fork-owned JVM tests in `app/ui/src/test`.
 
 ### Strings
 

@@ -73,6 +73,7 @@ android {
 
 dependencies {
     implementation(libs.bundles.kotlin)
+    testImplementation(libs.bundles.tests) // Fork: JVM tests for fork-owned UI logic
 
     implementation(libs.androidx.compose.runtime)
     implementation(libs.androidx.compose.foundation)

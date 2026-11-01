@@ -69,12 +69,13 @@ The mapping is lossy, because Blackfyre's semantic tokens collapse into Material
 | surfaceContainerHighest | `bf-surface-sunk` #dedbd4 | `bf-card-edge` #3a3935 |
 | surfaceDim / surfaceBright | `bf-paper-deep` #d9d6cf / `bf-surface-hover` #f8f7f4 | `bf-paper-deep` #161615 / `bf-surface-hover` #2c2c29 |
 | surfaceTint | `bf-surface` #f3f2ee | `bf-surface` #242421 |
-| outline / outlineVariant | `bf-line-strong` #bfbbb3 / `bf-line` #d3d0c9 | `bf-card-edge` #3a3935 / `bf-line` #33332f |
+| outline / outlineVariant | `bf-ink-hint` #68665f / `bf-line` #d3d0c9 | `bf-ink-hint` #8f8c84 / `bf-line` #33332f |
 | inverseSurface / inverseOnSurface | `bf-panel` #1b1b19 / `bf-on-panel` #f3f2ee | `bf-ink` #f3f2ee / `bf-paper` #1b1b19 |
 | scrim | #000000 (`bf-panel-edge`) | #000000 (`bf-panel-edge`) |
 
 - `surfaceTint` equals `surface`, so Material's tonal elevation adds no colour cast; Blackfyre expresses elevation with depth instead.
-- Dark `outline` uses `bf-card-edge`, because Dark `bf-line-strong` (#0e0e0d) is darker than the page and would not show.
+- `outline` uses `bf-ink-hint`, not a line token. Material draws the thumb and border of a switch that is off, and the borders of outlined controls, in `outline` on `surfaceContainerHighest` and the other surfaces. The line tokens are too faint for that: `bf-line-strong` reaches only 1.38:1 on the Paper track, and Dark `bf-line-strong` (#0e0e0d) is darker than the page. `bf-card-edge`, the first Dark choice, equalled the Dark track (`surfaceContainerHighest`) and hid the switch entirely (found on the device after task 4.1). `bf-ink-hint` reaches at least 3:1 on every surface role in both schemes, the WCAG level for non-text boundaries, and a unit test pins this.
+- `onPrimaryContainer` stays `bf-on-accent`, as the accent rule requires. Upstream's watch faces, however, draw light content on a dark wallpaper in `onPrimaryContainer` when the launcher is dark, assuming Material's tonal scheme, where that role is a light tint; in Dark Blackfyre it equals the page colour and the clock vanished. A fork-owned `ClockFaceColors` wraps the watch faces in upstream's `Clock()` and, when the launcher is dark and `onPrimaryContainer` is darker than `primaryContainer`, gives them `primary` (`bf-accent-on-dark`) in that role. Tonal schemes are unaffected.
 - The light `errorContainer` uses `bf-surface-hover`, because `bf-alert-text` on `bf-surface-sunk` is only 4.07:1.
 - The core palette stays empty: every role is a static colour.
 
@@ -84,7 +85,7 @@ The font keys are `plain` and `brand` → Archivo, `mono` → JetBrains Mono and
 
 | Material 3 slots | Blackfyre style | Font, weight, line height (em), letter-spacing (em) |
 |---|---|---|
-| displayLarge / Medium / Small | display / title / headline | Archivo 600; 1.0 / 1.0 / 1.05; −0.045 / −0.04 / −0.03 |
+| displayLarge / Medium / Small | display / title / headline | Archivo 600; 0.9 / 0.95 / 1.05; −0.045 / −0.04 / −0.03 |
 | headlineLarge / Medium / Small | h2 / h3 / h4 | Archivo 600; 1.15 / 1.1 / 1.2; −0.02 / −0.02 / −0.01 |
 | titleLarge / Medium / Small | h4, statement weight | Archivo 600 / 600 / 500; 1.2; −0.01 / 0 / 0 |
 | bodyLarge / Medium / Small | body / body-sm | Archivo 400; 1.5; 0 |
@@ -92,7 +93,7 @@ The font keys are `plain` and `brand` → Archivo, `mono` → JetBrains Mono and
 | labelMedium | label | BF Mono Caps 400, 12 sp; 1.3; 0.06 |
 | labelSmall | kicker | BF Mono Caps 400, 11 sp; 1.3; 0.1 |
 
-- Display line heights are raised from Blackfyre's 0.9–0.95 to 1.0, because tight line heights risk clipped ascenders and descenders in Compose text layout. This is unverified and is checked on the device; if 0.9–0.95 renders cleanly, the brand values are used.
+- Display line heights use Blackfyre's values (display 0.9, title 0.95). Tight line heights risked clipped ascenders and descenders in Compose text layout, so they were checked on the device (Pixel 7, task 4.2): four lines of Archivo 600 at 57 sp and 0.9 render without clipping or overlapping glyphs. Upstream's `DigitalClock1` overrides `displayLarge` to 0.8em, which also renders cleanly.
 - Body line height is 1.5 rather than the site's 1.6–1.7: launcher lists are dense, and the site's value is for long-form reading. This is a deliberate deviation, recorded here.
 - The emphasised styles keep upstream's relative weights.
 

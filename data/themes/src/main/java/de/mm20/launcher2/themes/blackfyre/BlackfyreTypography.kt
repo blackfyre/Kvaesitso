@@ -23,8 +23,8 @@ private fun style(font: String, size: Int, weight: Int, lineHeight: Float, lette
     )
 
 val BlackfyreTextStyles = TextStyles(
-    displayLarge = style("brand", 57, 600, 1.0f, -0.045f), // display
-    displayMedium = style("brand", 45, 600, 1.0f, -0.04f), // title
+    displayLarge = style("brand", 57, 600, 0.9f, -0.045f), // display
+    displayMedium = style("brand", 45, 600, 0.95f, -0.04f), // title
     displaySmall = style("brand", 36, 600, 1.05f, -0.03f), // headline
     headlineLarge = style("brand", 32, 600, 1.15f, -0.02f), // h2
     headlineMedium = style("brand", 28, 600, 1.1f, -0.02f), // h3

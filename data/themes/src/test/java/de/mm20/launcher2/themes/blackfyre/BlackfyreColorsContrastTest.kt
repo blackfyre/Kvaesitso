@@ -78,6 +78,21 @@ class BlackfyreColorsContrastTest {
         Assert.assertEquals(emptyList<String>(), failures)
     }
 
+    /**
+     * Material draws switch thumbs and borders, and outlined control borders, in `outline` on
+     * these roles; WCAG 2 asks 3:1 for such non-text boundaries.
+     */
+    @Test
+    fun outlineReachesNonTextContrastOnEverySurface() {
+        val failures = schemes.flatMap { (name, scheme) ->
+            surfaces.mapNotNull { bg ->
+                val ratio = contrast(scheme.outline, bg(scheme))
+                if (ratio < 3.0) "$name outline on ${bg.name}: %.2f".format(ratio) else null
+            }
+        }
+        Assert.assertEquals(emptyList<String>(), failures)
+    }
+
     @Test
     fun accentIsNeverTextOnLight() {
         val accent = StaticColor(0xFFE2551D.toInt())
