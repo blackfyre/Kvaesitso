@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.mm20.launcher2.applications.AppRepository
 import de.mm20.launcher2.data.customattrs.CustomIcon
+import de.mm20.launcher2.data.customattrs.FolderDockRepository
 import de.mm20.launcher2.icons.IconService
 import de.mm20.launcher2.icons.LauncherIcon
 import de.mm20.launcher2.search.SavableSearchable
@@ -31,12 +32,14 @@ class EditTagSheetVM : ViewModel(), KoinComponent {
     private val searchService: SearchService by inject()
     private val iconService: IconService by inject()
     private val appRepository: AppRepository by inject()
+    private val folderDock: FolderDockRepository by inject() // Fork (dock-folder-opt-in)
 
     private var oldTagName by mutableStateOf<String?>(null)
     private var allTags by mutableStateOf(emptySet<String>())
     var tagName by mutableStateOf("")
     var tagCustomIcon = MutableStateFlow<CustomIcon?>(null)
     var tagIcon = emptyFlow<LauncherIcon?>()
+    var showInDock by mutableStateOf(false) // Fork (dock-folder-opt-in)
 
     var loading by mutableStateOf(true)
 
@@ -59,10 +62,12 @@ class EditTagSheetVM : ViewModel(), KoinComponent {
         this.page = if (tag == null) EditTagSheetPage.CreateTag else EditTagSheetPage.CustomizeTag
         this.wasOnLastPage = this.page == EditTagSheetPage.CustomizeTag
         this.taggedItems = emptyList()
+        this.showInDock = false
         viewModelScope.launch(Dispatchers.Default) {
             allTags = tagService.getAllTags().first().toSet()
             val items = if (tag != null) tagService.getTaggedItems(tag).first() else emptyList()
             tagCustomIcon.value = if (tag != null) iconService.getCustomIcon(Tag(tag)).first() else null
+            showInDock = tag != null && folderDock.isDocked(tag)
             tagIcon = tagCustomIcon.map {
                 if (tag != null) iconService.resolveCustomIcon(Tag(tag), iconSize, it).first()
                 else null
@@ -83,10 +88,15 @@ class EditTagSheetVM : ViewModel(), KoinComponent {
         val oldName = oldTagName
         val newName = tagName
         val tagIcon = tagCustomIcon.value
-        if ((taggedItems.isEmpty() || tagName.isEmpty()) && oldName != null) tagService.deleteTag(oldName)
-        else if (oldName != null) tagService.updateTag(oldName, newName = newName, items = taggedItems)
+        if ((taggedItems.isEmpty() || tagName.isEmpty()) && oldName != null) {
+            // Fork (dock-folder-opt-in): deleteTag clears the icon and the dock option; keep it so.
+            tagService.deleteTag(oldName)
+            return
+        } else if (oldName != null) tagService.updateTag(oldName, newName = newName, items = taggedItems)
         else tagService.createTag(tagName, taggedItems)
 
+        if (oldName != null && oldName != newName) folderDock.move(oldName, newName, showInDock)
+        else folderDock.setDocked(newName, showInDock)
         if (oldName != null && oldName != newName) {
             iconService.setCustomIcon(Tag(oldName), null)
         }

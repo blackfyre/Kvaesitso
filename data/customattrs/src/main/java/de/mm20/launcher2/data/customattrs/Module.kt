@@ -7,4 +7,5 @@ import org.koin.dsl.module
 val customAttrsModule = module {
     factory<Backupable>(named<CustomAttributesRepository>()) { CustomAttributesRepositoryImpl(get(), get()) }
     factory<CustomAttributesRepository> { CustomAttributesRepositoryImpl(get(), get()) }
+    single { FolderDockRepository(get()) } // Fork (dock-folder-opt-in)
 }

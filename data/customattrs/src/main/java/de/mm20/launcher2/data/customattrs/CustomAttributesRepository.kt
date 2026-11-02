@@ -8,6 +8,7 @@ import de.mm20.launcher2.database.entities.CustomAttributeEntity
 import de.mm20.launcher2.searchable.SavableSearchableRepository
 import de.mm20.launcher2.ktx.jsonObjectOf
 import de.mm20.launcher2.search.SavableSearchable
+import de.mm20.launcher2.search.Tag
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -173,6 +174,9 @@ internal class CustomAttributesRepositoryImpl(
         val dao = appDatabase.customAttrsDao()
         return scope.launch {
             dao.deleteTag(tag)
+            // Fork (dock-folder-opt-in): a later tag with this name starts without these.
+            dao.clearCustomAttribute(Tag(tag).key, CustomAttributeType.Icon.value)
+            dao.clearCustomAttribute(Tag(tag).key, FolderDockRepository.Type)
         }
     }
 

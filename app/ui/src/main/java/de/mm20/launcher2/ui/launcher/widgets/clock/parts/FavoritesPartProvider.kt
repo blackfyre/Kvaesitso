@@ -9,6 +9,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import de.mm20.launcher2.data.customattrs.FolderDockRepository
 import de.mm20.launcher2.preferences.ui.UiSettings
 import de.mm20.launcher2.searchable.PinnedLevel
 import de.mm20.launcher2.services.favorites.FavoritesService
@@ -27,6 +28,7 @@ class FavoritesPartProvider : PartProvider, KoinComponent {
     private val favoritesService: FavoritesService by inject()
     private val widgetRepository: WidgetRepository by inject()
     private val uiSettings: UiSettings by inject()
+    private val folderDock: FolderDockRepository by inject() // Fork (dock-folder-opt-in)
 
     override fun getRanking(context: Context): Flow<Int> = flow {
         emit(Int.MAX_VALUE)
@@ -45,8 +47,8 @@ class FavoritesPartProvider : PartProvider, KoinComponent {
         )
 
         val favorites by remember(columns, dockRows, excludeCalendar) {
-            // Fork (folder-dock-and-first-item-icon): pinned tags lead the dock as folders.
-            favoritesService.pinnedTagsFirst(columns * dockRows) { limit ->
+            // Fork (folder-dock-and-first-item-icon): pinned tags shown in the dock lead it as folders.
+            favoritesService.pinnedTagsFirst(columns * dockRows, folderDock::docked) { limit ->
                 favoritesService.getFavorites(
                     excludeTypes = if (excludeCalendar) listOf("calendar", "tag") else listOf("tag"),
                     minPinnedLevel = PinnedLevel.FrequentlyUsed,

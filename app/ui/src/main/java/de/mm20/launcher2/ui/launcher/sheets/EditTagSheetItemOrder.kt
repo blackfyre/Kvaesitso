@@ -54,6 +54,7 @@ import kotlinx.coroutines.launch
 fun TaggedItemsOrder(viewModel: EditTagSheetVM) {
     val iconSize = 32.dp.toPixels().toInt()
     FirstItemIconSwitch(viewModel, iconSize)
+    ShowInDockSwitch(viewModel)
     val scope = rememberCoroutineScope()
     val haptic = LocalHapticFeedback.current
     lateinit var state: LazyDragAndDropListState
@@ -142,6 +143,34 @@ private fun FirstItemIconSwitch(viewModel: EditTagSheetVM, iconSize: Int) {
             style = MaterialTheme.typography.bodyLarge,
         )
         Switch(checked = checked, onCheckedChange = null)
+    }
+}
+
+/**
+ * Fork (dock-folder-opt-in): show this folder in the clock widget's dock while the tag is pinned.
+ * Saved with the tag.
+ */
+@Composable
+private fun ShowInDockSwitch(viewModel: EditTagSheetVM) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .toggleable(
+                value = viewModel.showInDock,
+                role = Role.Switch,
+                onValueChange = { viewModel.showInDock = it },
+            )
+            .padding(vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = stringResource(R.string.tag_folder_show_in_dock),
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = 48.dp, end = 16.dp),
+            style = MaterialTheme.typography.bodyLarge,
+        )
+        Switch(checked = viewModel.showInDock, onCheckedChange = null)
     }
 }
 

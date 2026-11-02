@@ -77,14 +77,14 @@ Dependency injection is Koin. Each module has a `Module.kt` declaring its Koin d
 
 ### Backup and restore
 
-`services:backup` `BackupManager` zips files written by every Koin-registered `Backupable` (e.g. `CustomAttributesRepository`, `SavableSearchableRepository`, `ThemeRepository`, widgets, search actions, settings). Each component writes its own JSON files into the backup directory and reads them back on restore; bulk DB import/export goes through `BackupRestoreDao`. `BackupFormatMajor/Minor` and the format changelog in `BackupManager` govern compatibility: any change to what a component serialises (for example, tag order) needs a minor-format bump and tolerant restore of older backups.
+`services:backup` `BackupManager` zips files written by every Koin-registered `Backupable` (e.g. `CustomAttributesRepository`, `SavableSearchableRepository`, `ThemeRepository`, widgets, search actions, settings). Each component writes its own JSON files into the backup directory and reads them back on restore; bulk DB import/export goes through `BackupRestoreDao`. `BackupFormatMajor/Minor` and the format changelog in `BackupManager` govern compatibility: a change that makes older backups restore wrongly (for example, tag order) needs a minor-format bump and tolerant restore of older backups. A new custom-attribute type that older backups simply lack (such as `folder_dock`) needs no bump: the format number is shared with upstream.
 
 ### Favourites, tags and the home screen
 
 - The home screen's widget column (`app/ui/.../launcher/scaffold/components/ClockAndWidgetsHomeComponent.kt`) hosts the Favourites widget; pinned items are managed by `services:favorites`.
 - `Tag` (`core/base/.../search/Tag.kt`) is a `SavableSearchable` with `preferDetailsOverLaunch = true`, so `GridItem` opens its popup on tap.
 - Tag editing goes through `services:tags` (`TagsService`) and `app/ui/.../launcher/sheets/EditTagSheet*`.
-- Folders (pinned tags) are drawn by `GridItem` through the fork's `app/ui/.../search/common/grid/folder/`. Upstream seams to check on every upstream merge: `FavoritesVM` (tags in the grid), `FavoritesPartProvider` (the clock widget's dock; `pinnedTagsFirst`), and the `FirstItemIcon` line in `CustomIcon.fromDatabaseEntity` (`data:customattrs`; the "first item's icon" folder option is stored as the tag's custom icon).
+- Folders (pinned tags) are drawn by `GridItem` through the fork's `app/ui/.../search/common/grid/folder/`. Upstream seams to check on every upstream merge: `FavoritesVM` (tags in the grid), `FavoritesPartProvider` (the clock widget's dock; `pinnedTagsFirst`), the `FirstItemIcon` line in `CustomIcon.fromDatabaseEntity` (`data:customattrs`; the "first item's icon" folder option is stored as the tag's custom icon). A folder is in the dock only when its "Show in dock" option is on: a fork `folder_dock` row on the tag's key (`FolderDockRepository`, `data:customattrs` `FolderDock.kt`, one Koin line in its `Module.kt`), set in `EditTagSheetVM.save()` (which moves it on rename and writes nothing when it deletes the tag). `CustomAttributesRepositoryImpl.deleteTag` also clears the tag's icon and `folder_dock` rows (two lines).
 - Fork-only strings go in `core/i18n/src/main/res/values/strings_fork.xml`, not upstream's `strings.xml`.
 
 ### Theming
