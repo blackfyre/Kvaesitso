@@ -5,10 +5,12 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.mm20.launcher2.applications.AppRepository
 import de.mm20.launcher2.data.customattrs.CustomIcon
+import de.mm20.launcher2.data.customattrs.FirstItemIcon
 import de.mm20.launcher2.data.customattrs.FolderDockRepository
 import de.mm20.launcher2.icons.IconService
 import de.mm20.launcher2.icons.LauncherIcon
@@ -17,15 +19,19 @@ import de.mm20.launcher2.search.SearchService
 import de.mm20.launcher2.search.Tag
 import de.mm20.launcher2.services.tags.TagsService
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class EditTagSheetVM : ViewModel(), KoinComponent {
 
     private val tagService: TagsService by inject()
@@ -68,10 +74,16 @@ class EditTagSheetVM : ViewModel(), KoinComponent {
             val items = if (tag != null) tagService.getTaggedItems(tag).first() else emptyList()
             tagCustomIcon.value = if (tag != null) iconService.getCustomIcon(Tag(tag)).first() else null
             showInDock = tag != null && folderDock.isDocked(tag)
-            tagIcon = tagCustomIcon.map {
-                if (tag != null) iconService.resolveCustomIcon(Tag(tag), iconSize, it).first()
-                else null
-            }
+            // Fork (folder-dock-and-first-item-icon): icon providers do not know FirstItemIcon, so
+            // the preview shows the first item's icon itself, as the folder does.
+            tagIcon = combine(tagCustomIcon, snapshotFlow { taggedItems.firstOrNull() }) { c, f -> c to f }
+                .flatMapLatest { (custom, first) ->
+                    when {
+                        custom is FirstItemIcon -> first?.let { iconService.getIcon(it, iconSize) } ?: flowOf(null)
+                        tag != null -> flowOf(iconService.resolveCustomIcon(Tag(tag), iconSize, custom).first())
+                        else -> flowOf(null)
+                    }
+                }
 
             val apps = appRepository.findMany().first { it.isNotEmpty() }.sorted()
             taggedItems = items
