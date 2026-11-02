@@ -2,7 +2,7 @@
 
 ### Requirement: Pinned tags appear as folders in the dock
 
-The clock widget's dock SHALL show as a folder every pinned tag whose "Show in dock" option is on, before the other dock items, in the order of the Favourites editor's Tags section. Folders SHALL count towards the dock's capacity of grid columns × dock rows; when such folders fill it, the dock SHALL show only folders. A tag that is not pinned, or whose "Show in dock" option is off, SHALL NOT appear in the dock. Folders in the dock SHALL look and behave as folders in the Favourites grid do: the same icon, tap, long-press and drag behaviour. The dock SHALL keep showing no labels.
+The clock widget's dock SHALL show as a folder every pinned tag whose "Show in dock" option is on, before the other dock items, in the order of the Favourites editor's Tags section. Folders SHALL count towards the dock's capacity of grid columns × dock rows; when such folders fill it, the dock SHALL show only folders. A tag that is not pinned, or whose "Show in dock" option is off, SHALL NOT appear in the dock. An item that belongs to a tag shown in the dock SHALL NOT also appear in the dock on its own, whether it is frequently used or pinned; the next item takes its slot. Folders in the dock SHALL look and behave as folders in the Favourites grid do: the same icon, tap, long-press and drag behaviour. The dock SHALL keep showing no labels.
 
 #### Scenario: Folder leads the dock
 
@@ -19,6 +19,12 @@ The clock widget's dock SHALL show as a folder every pinned tag whose "Show in d
 
 - **WHEN** the grid has 5 columns, the dock has 1 row, tags Home and Work are pinned with "Show in dock" on, and 6 other items are pinned
 - **THEN** the dock shows Home, Work and the first 3 of the other items
+
+#### Scenario: Folder items are not repeated
+
+- **WHEN** tag Home holds Home Assistant and Reolink, is shown in the dock, and Reolink is among the most used apps
+- **THEN** the dock shows the Home folder and does not show Reolink on its own
+- **AND** the slot Reolink would have taken goes to the next frequently used or pinned item
 
 #### Scenario: Unpinned tag stays out
 

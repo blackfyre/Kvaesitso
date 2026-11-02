@@ -7,6 +7,7 @@
 
 - [x] 2.1 Change `pinnedTagsFirst` to take a `docked` lookup. It reads the pinned tags without a limit, keeps the docked ones in order, caps them at `capacity` and fills the rest from `others`. Extract the selection step as a pure function. Add a JVM test in `app/ui/src/test` covering order, capacity, undocked tags skipped, and no docked tags. Verify that the test passes.
 - [x] 2.2 In `FavoritesPartProvider`, inject `FolderDockRepository` and pass `it::docked` to `pinnedTagsFirst`. Verify `mise run build` succeeds.
+- [x] 2.3 Leave items of docked folders out of the dock's other items: add `FolderDockRepository.itemsIn(tags)`, request `left + excluded` items from `others` and filter them, with the selection in a pure function covered by the JVM test (duplicates removed, freed slot refilled, capacity kept). Verify the test passes and on the device that an app in the docked Home folder no longer appears beside it.
 
 ## 3. Tag editor
 

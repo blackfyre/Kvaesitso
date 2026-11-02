@@ -8,6 +8,7 @@ The clock widget's dock shows every pinned tag as a folder (`favorites-folders`,
 
 - The tag editor gets a per-folder option, "Show in dock", next to "Use first item's icon". It is off by default.
 - The dock shows a tag as a folder only when the tag is pinned **and** its option is on. Order and capacity are unchanged: such folders lead the dock in the Favourites editor's Tags order and count towards grid columns × dock rows.
+- An app in a folder shown in the dock no longer also appears in the dock on its own (as a frequently used or pinned item); the next item fills the slot.
 - Unpinning a tag keeps its option, so pinning it again brings the folder back to the dock.
 - The option follows a rename of the tag and survives backup and restore. Restoring a backup made before this change leaves every tag's option off.
 - Deleting a tag clears its option and its custom icon, so a later tag with the same name starts clean. Today the custom icon is left behind on delete (upstream behaviour), and the new tag inherits it. This fixes the icon case as well; it is a small addition beyond the dock option.

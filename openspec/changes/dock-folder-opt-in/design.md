@@ -35,6 +35,7 @@
    - `FavoritesPartProvider` injects `FolderDockRepository` and passes `it::docked`. That is one extra line in the upstream file beside the existing hook.
    - The filtering step is a pure function, so it can be unit-tested in `app/ui/src/test` without Room.
    - Reading without a limit is needed because undocked tags must not use up the capacity. The pinned-tag list is small.
+   - Items of the docked folders are left out of `others`: `FolderDockRepository.itemsIn(tags)` combines `CustomAttrsDao.getItemsWithTag` for each docked tag into a key set. `others` is asked for the free slots plus that set's size, so removing duplicates cannot leave slots empty. `pinnedTagsFirst` takes the repository itself instead of the `docked` function reference.
 
 3. **Editor.**
    - `EditTagSheetVM` loads the option in its init, next to `tagCustomIcon`, into a `showInDock` state.

@@ -7,6 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -28,6 +29,13 @@ class FolderDockRepository internal constructor(private val appDatabase: AppData
         val keys = tags.associateBy { Tag(it).key }
         return appDatabase.customAttrsDao().getCustomAttributes(keys.keys.toList(), Type)
             .map { rows -> rows.mapNotNullTo(mutableSetOf()) { keys[it.key] } }
+    }
+
+    /** The keys of the items in [tags]. */
+    fun itemsIn(tags: List<String>): Flow<Set<String>> {
+        if (tags.isEmpty()) return flowOf(emptySet())
+        val dao = appDatabase.customAttrsDao()
+        return combine(tags.map { dao.getItemsWithTag(it) }) { lists -> lists.flatMapTo(mutableSetOf()) { it } }
     }
 
     suspend fun isDocked(tag: String): Boolean = docked(listOf(tag)).first().isNotEmpty()

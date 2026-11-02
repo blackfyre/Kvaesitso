@@ -1,5 +1,6 @@
 package de.mm20.launcher2.ui.launcher.search.common.grid.folder
 
+import de.mm20.launcher2.data.customattrs.FolderDockRepository
 import de.mm20.launcher2.search.SavableSearchable
 import de.mm20.launcher2.search.Tag
 import de.mm20.launcher2.searchable.PinnedLevel
@@ -12,14 +13,14 @@ import kotlinx.coroutines.flow.map
 
 /**
  * Fork (folder-dock-and-first-item-icon, dock-folder-opt-in): the pinned tags whose "Show in dock"
- * option is on ([docked] returns those names among the ones it is given), in the Favourites
- * editor's Tags order, followed by [others] (called with the capacity left), at most [capacity]
- * items in total. [others] must exclude tags itself.
+ * option is on, in the Favourites editor's Tags order, followed by [others] without the items of
+ * those folders, at most [capacity] items in total. [others] is called with the number of items it
+ * should return and must exclude tags itself.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 fun FavoritesService.pinnedTagsFirst(
     capacity: Int,
-    docked: (tags: List<String>) -> Flow<Set<String>>,
+    folderDock: FolderDockRepository,
     others: (limit: Int) -> Flow<List<SavableSearchable>>,
 ): Flow<List<SavableSearchable>> {
     if (capacity <= 0) return flowOf(emptyList())
@@ -27,14 +28,18 @@ fun FavoritesService.pinnedTagsFirst(
         includeTypes = listOf("tag"),
         minPinnedLevel = PinnedLevel.AutomaticallySorted,
     ).flatMapLatest { pinned ->
-        val names = pinned.mapNotNull { (it as? Tag)?.tag }
-        docked(names).map { dockedFolders(pinned, it, capacity) }
-    }.flatMapLatest { tags ->
-        val left = capacity - tags.size
-        if (left <= 0) flowOf(tags)
-        else others(left).map { tags + it.take(left) }
+        folderDock.docked(pinned.tagNames()).map { dockedFolders(pinned, it, capacity) }
+    }.flatMapLatest { folders ->
+        val left = capacity - folders.size
+        if (left <= 0) flowOf(folders)
+        else folderDock.itemsIn(folders.tagNames()).flatMapLatest { inFolders ->
+            // Ask for enough items that removing the folders' own items still fills the dock.
+            others(left + inFolders.size).map { dockItems(folders, it, inFolders, capacity) }
+        }
     }
 }
+
+private fun List<SavableSearchable>.tagNames() = mapNotNull { (it as? Tag)?.tag }
 
 /** The [pinned] tags whose names are in [docked], in order, at most [capacity] of them. */
 internal fun dockedFolders(
@@ -43,3 +48,12 @@ internal fun dockedFolders(
     capacity: Int,
 ): List<SavableSearchable> =
     pinned.filter { (it as? Tag)?.tag in docked }.take(capacity.coerceAtLeast(0))
+
+/** [folders], then [others] without the items whose keys are in [inFolders], at most [capacity]. */
+internal fun dockItems(
+    folders: List<SavableSearchable>,
+    others: List<SavableSearchable>,
+    inFolders: Set<String>,
+    capacity: Int,
+): List<SavableSearchable> =
+    (folders + others.filter { it.key !in inFolders }).take(capacity.coerceAtLeast(0))

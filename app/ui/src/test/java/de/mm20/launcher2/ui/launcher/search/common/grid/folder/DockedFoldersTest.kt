@@ -28,4 +28,26 @@ class DockedFoldersTest {
     fun noDockedTagsGivesNoFolders() {
         Assert.assertEquals(emptyList<Tag>(), dockedFolders(pinned, emptySet(), 5))
     }
+
+    // Tags stand in for apps here: dockItems only compares keys.
+    private val home = Tag("Home")
+    private val reolink = Tag("Reolink")
+    private val termux = Tag("Termux")
+    private val brave = Tag("Brave")
+
+    @Test
+    fun folderItemsAreNotRepeatedAndTheNextItemFillsTheSlot() {
+        Assert.assertEquals(
+            listOf(home, termux, brave),
+            dockItems(listOf(home), listOf(reolink, termux, brave), setOf(reolink.key), 3),
+        )
+    }
+
+    @Test
+    fun dockItemsKeepCapacity() {
+        Assert.assertEquals(
+            listOf(home, termux),
+            dockItems(listOf(home), listOf(termux, brave), emptySet(), 2),
+        )
+    }
 }

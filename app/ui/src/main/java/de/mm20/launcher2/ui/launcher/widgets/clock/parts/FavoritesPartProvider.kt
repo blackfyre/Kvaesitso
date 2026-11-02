@@ -48,7 +48,7 @@ class FavoritesPartProvider : PartProvider, KoinComponent {
 
         val favorites by remember(columns, dockRows, excludeCalendar) {
             // Fork (folder-dock-and-first-item-icon): pinned tags shown in the dock lead it as folders.
-            favoritesService.pinnedTagsFirst(columns * dockRows, folderDock::docked) { limit ->
+            favoritesService.pinnedTagsFirst(columns * dockRows, folderDock) { limit ->
                 favoritesService.getFavorites(
                     excludeTypes = if (excludeCalendar) listOf("calendar", "tag") else listOf("tag"),
                     minPinnedLevel = PinnedLevel.FrequentlyUsed,
